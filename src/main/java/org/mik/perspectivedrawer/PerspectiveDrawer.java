@@ -3,6 +3,8 @@ package org.mik.perspectivedrawer;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InflateException;
@@ -50,6 +52,8 @@ public class PerspectiveDrawer extends FrameLayout {
     private int mLeftSwipeArea = 50; //dp
     private int mShadowSize;
     private float mRightLimit;
+
+    private SavedState mSavedState;
 
     public PerspectiveDrawer(Context context) {
         this(context, null);
@@ -100,6 +104,11 @@ public class PerspectiveDrawer extends FrameLayout {
                 MeasureSpec.EXACTLY);
 
         mPageHolder.measure(widthSpec, heightSpec);
+
+        if (mSavedState != null) {
+            mCurDegree = mSavedState.currentDegree;
+            mSavedState = null;
+        }
 
         setOpenDegree(mCurDegree);
 
@@ -523,4 +532,53 @@ public class PerspectiveDrawer extends FrameLayout {
         }
     }
 
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState =  super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.currentDegree = mCurDegree;
+        return ss;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof SavedState) {
+            SavedState ss = (SavedState) state;
+            super.onRestoreInstanceState(ss.getSuperState());
+            mSavedState = ss;
+            requestLayout();
+        } else {
+            super.onRestoreInstanceState(state);
+        }
+    }
+
+    private static class SavedState extends BaseSavedState {
+        public float currentDegree;
+
+        public SavedState(Parcel source) {
+            super(source);
+            currentDegree = source.readFloat();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeFloat(currentDegree);
+        }
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 }
