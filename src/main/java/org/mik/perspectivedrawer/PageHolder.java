@@ -7,6 +7,9 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
+/**
+ * Holder layout with ability to draw transparent color over it childes.
+ */
 public class PageHolder extends FrameLayout {
     private int mForegroundColor = 0;
 
@@ -22,6 +25,11 @@ public class PageHolder extends FrameLayout {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * Set color to draw over childes.
+     *
+     * @param color the color
+     */
     public void setForegroundColor(int color) {
         mForegroundColor = color;
         invalidate();
