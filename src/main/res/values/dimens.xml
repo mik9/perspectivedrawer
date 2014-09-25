@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="animated_drawer_page_shift">40dp</dimen>
+    <dimen name="animated_drawer_menu_shift">40dp</dimen>
+    <integer name="animated_drawer_animation_duration">400</integer>
+    <integer name="animated_drawer_angle">10</integer>
+    <dimen name="animated_drawer_shadow_width">20dp</dimen>
+</resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Rotation animation on normal screens -->
+    <dimen name="animated_drawer_page_shift">300dp</dimen>
+</resources>
