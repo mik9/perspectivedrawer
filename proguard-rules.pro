@@ -15,3 +15,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep class org.mik.perspectivedrawer.PerspectiveDrawer {
+   public *;
+}
+-keep class org.mik.perspectivedrawer.PageHolder {
+   public *;
+}
