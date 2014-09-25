@@ -73,11 +73,13 @@ public class PerspectiveDrawer extends FrameLayout {
 
         mTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
         mLongPressTimeout = ViewConfiguration.getLongPressTimeout();
-        mPageShift = getResources().getDimensionPixelSize(R.dimen.animated_drawer_page_shift);
-        mMenuShift = getResources().getDimensionPixelSize(R.dimen.animated_drawer_menu_shift);
-        mAnimationDuration = getResources().getInteger(R.integer.animated_drawer_animation_duration);
-        mOpenedAngle = -Math.abs(getResources().getInteger(R.integer.animated_drawer_angle));
-        mShadowSize = getResources().getDimensionPixelSize(R.dimen.animated_drawer_shadow_width);
+        if (!isInEditMode()) {
+            mPageShift = getResources().getDimensionPixelSize(R.dimen.animated_drawer_page_shift);
+            mMenuShift = getResources().getDimensionPixelSize(R.dimen.animated_drawer_menu_shift);
+            mAnimationDuration = getResources().getInteger(R.integer.animated_drawer_animation_duration);
+            mOpenedAngle = -Math.abs(getResources().getInteger(R.integer.animated_drawer_angle));
+            mShadowSize = getResources().getDimensionPixelSize(R.dimen.animated_drawer_shadow_width);
+        }
     }
 
     @Override
