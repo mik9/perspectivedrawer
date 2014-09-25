@@ -39,6 +39,11 @@ public class PageHolder extends FrameLayout {
     public void draw(Canvas canvas) {
         canvas.setDrawFilter(new PaintFlagsDrawFilter(1, Paint.ANTI_ALIAS_FLAG));
         super.draw(canvas);
+        canvas.save();
+        canvas.clipRect(getPaddingLeft(), getPaddingTop(), getMeasuredWidth() - getPaddingRight(),
+                getMeasuredHeight() - getPaddingBottom());
         canvas.drawColor(mForegroundColor);
+        canvas.restore();
+
     }
 }
