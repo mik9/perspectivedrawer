@@ -90,8 +90,12 @@ public class PerspectiveDrawer extends FrameLayout {
             throw new InflateException("AnimatedDrawer should have 2 childs");
         }
 
-        mMenuHolder = (PageHolder) getChildAt(0);
-        mPageHolder = (PageHolder) getChildAt(1);
+        try {
+            mMenuHolder = (PageHolder) getChildAt(0);
+            mPageHolder = (PageHolder) getChildAt(1);
+        } catch (ClassCastException e) {
+            throw new InflateException("Childs should be org.mik.perspectivedrawer.PageHolder");
+        }
 
         mPageHolder.setPadding(mShadowSize, mShadowSize, mShadowSize, mShadowSize);
     }
@@ -536,7 +540,7 @@ public class PerspectiveDrawer extends FrameLayout {
 
     @Override
     protected Parcelable onSaveInstanceState() {
-        Parcelable superState =  super.onSaveInstanceState();
+        Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
         ss.currentDegree = mCurDegree;
         return ss;
