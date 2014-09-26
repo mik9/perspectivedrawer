@@ -2,6 +2,8 @@ package org.mik.perspectivedrawer;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Camera;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -52,6 +54,8 @@ public class PerspectiveDrawer extends FrameLayout {
     private int mLeftSwipeArea = 50; //dp
     private int mShadowSize;
     private float mRightLimit;
+    private float mScaledWidth;
+    private float mTranslateDistance;
 
     private SavedState mSavedState;
 
@@ -110,6 +114,37 @@ public class PerspectiveDrawer extends FrameLayout {
                 MeasureSpec.EXACTLY);
 
         mPageHolder.measure(widthSpec, heightSpec);
+    }
+
+    private void calculateScaledSizes() {
+        Matrix matrix = new Matrix();
+        matrix.reset();
+        Matrix matrix3d = new Matrix();
+        Camera camera = new Camera();
+
+        matrix.preScale(MINIMUM_SCALE_X, MINIMUM_SCALE_Y, mPageHolder.getMeasuredWidth() / 2,
+                mPageHolder.getMeasuredHeight() / 2);
+        camera.rotateY(mOpenedAngle);
+        camera.getMatrix(matrix3d);
+        matrix3d.preTranslate(- mPageHolder.getMeasuredWidth() / 2, - mPageHolder.getMeasuredHeight() / 2);
+        matrix3d.postTranslate(mPageHolder.getMeasuredWidth() / 2,
+                mPageHolder.getMeasuredHeight() / 2);
+        matrix.postConcat(matrix3d);
+
+        float[] pst = new float[]{0, 0};
+        matrix.mapPoints(pst);
+        final float left = pst[0];
+        mScaledWidth = (mPageHolder.getMeasuredWidth() / 2 - left) * 2;
+
+        mTranslateDistance = getMeasuredWidth() - (getMeasuredWidth() - mScaledWidth) / 2 - mPageShift;
+        mRightLimit = getMeasuredWidth() - mPageShift;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        mMenuHolder.layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
+        mPageHolder.layout(-mShadowSize, -mShadowSize, getMeasuredWidth() + mShadowSize,
+                getMeasuredHeight() + mShadowSize);
 
         if (mSavedState != null) {
             mCurDegree = mSavedState.currentDegree;
@@ -118,14 +153,7 @@ public class PerspectiveDrawer extends FrameLayout {
 
         setOpenDegree(mCurDegree);
 
-        mRightLimit = getMeasuredWidth() * (1f + (1f - (HONEY_CAPABLE ? MINIMUM_SCALE_X : 1f)) / 2f) - mPageShift;
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        mMenuHolder.layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
-        mPageHolder.layout(-mShadowSize, -mShadowSize, getMeasuredWidth() + mShadowSize,
-                getMeasuredHeight() + mShadowSize);
+        calculateScaledSizes();
     }
 
     /**
@@ -203,7 +231,7 @@ public class PerspectiveDrawer extends FrameLayout {
 
         float rel = interpolator.getInterpolation(degree / mOpenedAngle);
 
-        final float shift = rel * (getMeasuredWidth() - mPageShift);
+        final float shift = rel * mTranslateDistance;
         mOpened = degree != 0;
         mMenuHolder.setVisibility(mOpened ? VISIBLE : INVISIBLE);
         ViewHelper.setTranslationX(mPageHolder, shift);
