@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mik.perspectivedrawer;
+package ua.pl.mik.perspectivedrawer;
 
 import android.view.animation.Interpolator;
 

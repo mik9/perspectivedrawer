@@ -1,4 +1,4 @@
-package org.mik.perspectivedrawer;
+package ua.pl.mik.perspectivedrawer;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -100,7 +99,7 @@ public class PerspectiveDrawer extends FrameLayout {
             mMenuHolder = (PageHolder) getChildAt(0);
             mPageHolder = (PageHolder) getChildAt(1);
         } catch (ClassCastException e) {
-            throw new InflateException("Childs should be org.mik.perspectivedrawer.PageHolder");
+            throw new InflateException("Childs should be PageHolder");
         }
 
         mPageHolder.setPadding(mShadowSize, mShadowSize, mShadowSize, mShadowSize);
@@ -483,7 +482,7 @@ public class PerspectiveDrawer extends FrameLayout {
     /**
      * Get holder view for menu page.
      *
-     * @return {@link org.mik.perspectivedrawer.PageHolder} for menu page.
+     * @return {@link PageHolder} for menu page.
      */
     @SuppressWarnings("unused")
     public PageHolder getMenuHolder() {
@@ -493,7 +492,7 @@ public class PerspectiveDrawer extends FrameLayout {
     /**
      * Get holder view for main page.
      *
-     * @return {@link org.mik.perspectivedrawer.PageHolder} for main page.
+     * @return {@link PageHolder} for main page.
      */
     @SuppressWarnings("unused")
     public PageHolder getPageHolder() {
@@ -541,7 +540,7 @@ public class PerspectiveDrawer extends FrameLayout {
     }
 
     /**
-     * Set {@link org.mik.perspectivedrawer.PerspectiveDrawer.DrawerListener} to receive callbacks about drawer
+     * Set {@link PerspectiveDrawer.DrawerListener} to receive callbacks about drawer
      * change state.
      *
      * @param listener The  listener object.
