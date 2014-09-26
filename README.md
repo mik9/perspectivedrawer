@@ -8,12 +8,14 @@ Example application: https://github.com/mik9/perspectivedrawerexample
 How to use
 =================
 Gradle:
-```
-compile 'ua.pl.mik:perspectivedrawer:0.2@aar'
+```groovy
+dependencies {
+    compile 'ua.pl.mik:perspectivedrawer:0.2.1@aar'
+}
 ```
 
 Layout:
-```
+```xml
 <ua.pl.mik.perspectivedrawer.PerspectiveDrawer
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer"
