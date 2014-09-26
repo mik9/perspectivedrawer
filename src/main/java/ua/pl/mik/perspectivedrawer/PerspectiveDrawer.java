@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Camera;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -51,7 +52,7 @@ public class PerspectiveDrawer extends FrameLayout {
     private VelocityTracker mVelocityTracker;
 
     private int mLeftSwipeArea = 50; //dp
-    private int mShadowSize;
+    private Rect mPagePaddings = new Rect();
     private float mRightLimit;
     private float mScaledWidth;
     private float mTranslateDistance;
@@ -83,7 +84,6 @@ public class PerspectiveDrawer extends FrameLayout {
             mMenuShift = getResources().getDimensionPixelSize(R.dimen.animated_drawer_menu_shift);
             mAnimationDuration = getResources().getInteger(R.integer.animated_drawer_animation_duration);
             mOpenedAngle = -Math.abs(getResources().getInteger(R.integer.animated_drawer_angle));
-            mShadowSize = getResources().getDimensionPixelSize(R.dimen.animated_drawer_shadow_width);
         }
     }
 
@@ -102,16 +102,20 @@ public class PerspectiveDrawer extends FrameLayout {
             throw new InflateException("Childs should be PageHolder");
         }
 
-        mPageHolder.setPadding(mShadowSize, mShadowSize, mShadowSize, mShadowSize);
+        if (mPageHolder.getBackground() != null) {
+            mPageHolder.getBackground().getPadding(mPagePaddings);
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        final int widthSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec) + mShadowSize * 2,
+        final int widthSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec) + mPagePaddings.left
+                        + mPagePaddings.right,
                 MeasureSpec.EXACTLY);
-        final int heightSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec) + mShadowSize * 2,
+        final int heightSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec) + mPagePaddings.top
+                        + mPagePaddings.bottom,
                 MeasureSpec.EXACTLY);
 
         mPageHolder.measure(widthSpec, heightSpec);
@@ -144,8 +148,8 @@ public class PerspectiveDrawer extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         mMenuHolder.layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
-        mPageHolder.layout(-mShadowSize, -mShadowSize, getMeasuredWidth() + mShadowSize,
-                getMeasuredHeight() + mShadowSize);
+        mPageHolder.layout(-mPagePaddings.left, -mPagePaddings.top, getMeasuredWidth() + mPagePaddings.right,
+                getMeasuredHeight() + mPagePaddings.bottom);
 
         if (mSavedState != null) {
             mCurDegree = mSavedState.currentDegree;
