@@ -59,6 +59,8 @@ public class PerspectiveDrawer extends FrameLayout {
 
     private SavedState mSavedState;
 
+    private DrawerListener mListener;
+
     public PerspectiveDrawer(Context context) {
         this(context, null);
     }
@@ -231,6 +233,10 @@ public class PerspectiveDrawer extends FrameLayout {
 
         float rel = interpolator.getInterpolation(degree / mOpenedAngle);
 
+        if (mListener != null) {
+            mListener.onDrawerSlide(this, rel);
+        }
+
         final float shift = rel * mTranslateDistance;
         mOpened = degree != 0;
         mMenuHolder.setVisibility(mOpened ? VISIBLE : INVISIBLE);
@@ -247,6 +253,9 @@ public class PerspectiveDrawer extends FrameLayout {
                         mMenuHolder.setLayerType(LAYER_TYPE_HARDWARE, null);
                     }
                 });
+                if (mListener != null) {
+                    mListener.onDrawerOpened(this);
+                }
             } else if (disableAcceleration) {
                 post(new Runnable() {
                     @Override
@@ -255,6 +264,9 @@ public class PerspectiveDrawer extends FrameLayout {
                         mMenuHolder.setLayerType(LAYER_TYPE_NONE, null);
                     }
                 });
+                if (mListener != null) {
+                    mListener.onDrawerClosed(this);
+                }
             }
             mPageHolder.setRotationY(degreeInternal);
         }
@@ -529,6 +541,17 @@ public class PerspectiveDrawer extends FrameLayout {
     }
 
     /**
+     * Set {@link org.mik.perspectivedrawer.PerspectiveDrawer.DrawerListener} to receive callbacks about drawer
+     * change state.
+     *
+     * @param listener The  listener object.
+     */
+    @SuppressWarnings("unused")
+    public void setListener(DrawerListener listener) {
+        this.mListener = listener;
+    }
+
+    /**
      * Get current state.
      *
      * @return true if page currently opened.
@@ -629,5 +652,32 @@ public class PerspectiveDrawer extends FrameLayout {
                 return new SavedState[size];
             }
         };
+    }
+
+    /**
+     * Listener for monitoring events about drawers.
+     */
+    public interface DrawerListener {
+        /**
+         * Called when a drawer's position changes.
+         * @param drawerView The child view that was moved
+         * @param slideOffset The new offset of this drawer within its range, from 0-1
+         */
+        public void onDrawerSlide(View drawerView, float slideOffset);
+
+        /**
+         * Called when a drawer has settled in a completely open state.
+         * The drawer is interactive at this point.
+         *
+         * @param drawerView Drawer view that is now open
+         */
+        public void onDrawerOpened(View drawerView);
+
+        /**
+         * Called when a drawer has settled in a completely closed state.
+         *
+         * @param drawerView Drawer view that is now closed
+         */
+        public void onDrawerClosed(View drawerView);
     }
 }
