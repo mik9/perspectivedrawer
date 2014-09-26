@@ -350,6 +350,9 @@ public class PerspectiveDrawer extends FrameLayout {
                 mDownEvent = null;
                 break;
             default:
+                if (mTouchTarget != null) {
+                    dispatchTransformedTouchEvent(mTouchTarget, event);
+                }
                 break;
         }
 
