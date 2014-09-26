@@ -238,8 +238,6 @@ public class PerspectiveDrawer extends FrameLayout {
         if (mDimmingEnabled) {
             final int dim = (int) (rel * 160);
             mPageHolder.setForegroundColor(mOpened ? (dim & 0xff) << 24 : 0);
-        } else {
-            mPageHolder.setForegroundColor(0);
         }
 
         if (HONEY_CAPABLE) {
@@ -379,11 +377,25 @@ public class PerspectiveDrawer extends FrameLayout {
 
     /**
      * Enable or disable dimming while opening page. Enabled by default.
+     *
      * @param enabled false to disable dimming
      */
     public void setDimmingEnabled(boolean enabled) {
         mDimmingEnabled = enabled;
-        setOpenDegree(mCurDegree);
+        if (enabled) {
+            setOpenDegree(mCurDegree);
+        } else {
+            mPageHolder.setForegroundColor(0);
+        }
+    }
+
+    /**
+     * Returns current state of dimming.
+     *
+     * @return true if dimming is enabled.
+     */
+    public boolean isDimmingEnabled() {
+        return mDimmingEnabled;
     }
 
     /**
