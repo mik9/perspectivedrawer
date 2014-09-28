@@ -57,8 +57,6 @@ public class PerspectiveDrawer extends FrameLayout {
     private float mScaledWidth;
     private float mTranslateDistance;
 
-    private SavedState mSavedState;
-
     private DrawerListener mListener;
 
     public PerspectiveDrawer(Context context) {
@@ -154,11 +152,6 @@ public class PerspectiveDrawer extends FrameLayout {
         mMenuHolder.layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
         mPageHolder.layout(-mPagePaddings.left, -mPagePaddings.top, getMeasuredWidth() + mPagePaddings.right,
                 getMeasuredHeight() + mPagePaddings.bottom);
-
-        if (mSavedState != null) {
-            mCurDegree = mSavedState.currentDegree;
-            mSavedState = null;
-        }
 
         setOpenDegree(mCurDegree);
 
@@ -624,7 +617,7 @@ public class PerspectiveDrawer extends FrameLayout {
         if (state instanceof SavedState) {
             SavedState ss = (SavedState) state;
             super.onRestoreInstanceState(ss.getSuperState());
-            mSavedState = ss;
+            mCurDegree = ss.currentDegree;
             requestLayout();
         } else {
             super.onRestoreInstanceState(state);
