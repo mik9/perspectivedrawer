@@ -484,7 +484,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @return {@link PageHolder} for menu page.
      */
-    @SuppressWarnings("unused")
     public PageHolder getMenuHolder() {
         return mMenuHolder;
     }
@@ -494,7 +493,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @return {@link PageHolder} for main page.
      */
-    @SuppressWarnings("unused")
     public PageHolder getPageHolder() {
         return mPageHolder;
     }
@@ -504,7 +502,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @return animation duration.
      */
-    @SuppressWarnings("unused")
     public int getAnimationDuration() {
         return mAnimationDuration;
     }
@@ -514,7 +511,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @param animationDuration new animation duration.
      */
-    @SuppressWarnings("unused")
     public void setAnimationDuration(int animationDuration) {
         this.mAnimationDuration = animationDuration;
     }
@@ -524,7 +520,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @return page angle.
      */
-    @SuppressWarnings("unused")
     public int getOpenedAngle() {
         return mOpenedAngle;
     }
@@ -534,7 +529,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @param openedAngle new opened angle.
      */
-    @SuppressWarnings("unused")
     public void setOpenedAngle(int openedAngle) {
         this.mOpenedAngle = openedAngle;
     }
@@ -545,8 +539,18 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @param listener The  listener object.
      */
-    @SuppressWarnings("unused")
+    @Deprecated
     public void setListener(DrawerListener listener) {
+        setDrawerListener(listener);
+    }
+
+    /**
+     * Set a listener to be notified of drawer events.
+     *
+     * @param listener Listener to notify when drawer events occur
+     * @see DrawerListener
+     */
+    public void setDrawerListener(DrawerListener listener) {
         this.mListener = listener;
     }
 
@@ -555,7 +559,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @return true if page currently opened.
      */
-    @SuppressWarnings("unused")
     public boolean isOpened() {
         return mOpened;
     }
@@ -565,7 +568,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @return menu shift size.
      */
-    @SuppressWarnings("unused")
     public int getMenuShift() {
         return mMenuShift;
     }
@@ -575,7 +577,6 @@ public class PerspectiveDrawer extends FrameLayout {
      *
      * @param menuShift new menu shifting value.
      */
-    @SuppressWarnings("unused")
     public void setMenuShift(int menuShift) {
         this.mMenuShift = menuShift;
     }
