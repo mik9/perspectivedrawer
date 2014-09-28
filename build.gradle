@@ -11,11 +11,11 @@ android {
         minSdkVersion 10
         targetSdkVersion 19
         versionCode 1
-        versionName "0.2.1"
+        versionName "0.2.9"
     }
     buildTypes {
         release {
-            runProguard false
+            runProguard true
             proguardFiles 'proguard-android.txt', 'proguard-rules.pro'
         }
     }
@@ -56,7 +56,7 @@ uploadArchives {
 
                 groupId = "ua.pl.mik"
                 artifactId = "perspectivedrawer"
-                version = "0.2.1"
+                version = "0.2.9"
 
                 scm {
                     connection 'scm:git:https://github.com/mik9/perspectivedrawer.git'
