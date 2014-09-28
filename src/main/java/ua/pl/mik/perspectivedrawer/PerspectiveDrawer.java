@@ -233,10 +233,6 @@ public class PerspectiveDrawer extends FrameLayout {
 
         float rel = interpolator.getInterpolation(degree / mOpenedAngle);
 
-        if (mListener != null) {
-            mListener.onDrawerSlide(this, rel);
-        }
-
         final float shift = rel * mTranslateDistance;
         mOpened = degree != 0;
         mMenuHolder.setVisibility(mOpened ? VISIBLE : INVISIBLE);
@@ -253,9 +249,6 @@ public class PerspectiveDrawer extends FrameLayout {
                         mMenuHolder.setLayerType(LAYER_TYPE_HARDWARE, null);
                     }
                 });
-                if (mListener != null) {
-                    mListener.onDrawerOpened(this);
-                }
             } else if (disableAcceleration) {
                 post(new Runnable() {
                     @Override
@@ -264,9 +257,6 @@ public class PerspectiveDrawer extends FrameLayout {
                         mMenuHolder.setLayerType(LAYER_TYPE_NONE, null);
                     }
                 });
-                if (mListener != null) {
-                    mListener.onDrawerClosed(this);
-                }
             }
             mPageHolder.setRotationY(degreeInternal);
         }
@@ -285,6 +275,15 @@ public class PerspectiveDrawer extends FrameLayout {
             mPageHolder.setScaleX(scaleX);
             final float scaleY = MINIMUM_SCALE_Y + (1f - MINIMUM_SCALE_Y) * (1f - rel);
             mPageHolder.setScaleY(scaleY);
+        }
+
+        if (degree != mCurDegree && mListener != null) {
+            if (degree == CLOSED_ANGLE) {
+                mListener.onDrawerClosed(this);
+            } else if (degree == mOpenedAngle) {
+                mListener.onDrawerOpened(this);
+            }
+            mListener.onDrawerSlide(this, rel);
         }
 
         mCurDegree = degree;
