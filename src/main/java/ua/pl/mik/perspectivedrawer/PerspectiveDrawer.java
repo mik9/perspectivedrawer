@@ -127,14 +127,18 @@ public class PerspectiveDrawer extends FrameLayout {
         Matrix matrix3d = new Matrix();
         Camera camera = new Camera();
 
-        matrix.preScale(MINIMUM_SCALE_X, MINIMUM_SCALE_Y, mPageHolder.getMeasuredWidth() / 2,
-                mPageHolder.getMeasuredHeight() / 2);
-        camera.rotateY(mOpenedAngle);
-        camera.getMatrix(matrix3d);
+        if (HONEY_CAPABLE) {
+            matrix.preScale(MINIMUM_SCALE_X, MINIMUM_SCALE_Y, mPageHolder.getMeasuredWidth() / 2,
+                    mPageHolder.getMeasuredHeight() / 2);
+            camera.rotateY(mOpenedAngle);
+            camera.getMatrix(matrix3d);
+        }
         matrix3d.preTranslate(- mPageHolder.getMeasuredWidth() / 2, - mPageHolder.getMeasuredHeight() / 2);
         matrix3d.postTranslate(mPageHolder.getMeasuredWidth() / 2,
                 mPageHolder.getMeasuredHeight() / 2);
-        matrix.postConcat(matrix3d);
+        if (HONEY_CAPABLE) {
+            matrix.postConcat(matrix3d);
+        }
 
         float[] pst = new float[]{0, 0};
         matrix.mapPoints(pst);
