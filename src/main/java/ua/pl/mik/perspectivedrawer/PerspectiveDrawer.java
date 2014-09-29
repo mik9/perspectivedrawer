@@ -608,7 +608,7 @@ public class PerspectiveDrawer extends FrameLayout {
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
-        ss.currentDegree = mCurDegree;
+        ss.openState = isOpened();
         return ss;
     }
 
@@ -617,7 +617,7 @@ public class PerspectiveDrawer extends FrameLayout {
         if (state instanceof SavedState) {
             SavedState ss = (SavedState) state;
             super.onRestoreInstanceState(ss.getSuperState());
-            mCurDegree = ss.currentDegree;
+            mCurDegree = ss.openState ? mOpenedAngle : CLOSED_ANGLE;
             requestLayout();
         } else {
             super.onRestoreInstanceState(state);
@@ -625,17 +625,17 @@ public class PerspectiveDrawer extends FrameLayout {
     }
 
     private static class SavedState extends BaseSavedState {
-        public float currentDegree;
+        public boolean openState;
 
         public SavedState(Parcel source) {
             super(source);
-            currentDegree = source.readFloat();
+            openState = source.readInt() == 1;
         }
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            dest.writeFloat(currentDegree);
+            dest.writeInt(openState ? 1 : 0);
         }
 
         public SavedState(Parcelable superState) {
