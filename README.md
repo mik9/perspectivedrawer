@@ -41,3 +41,8 @@ Layout:
 
 </ua.pl.mik.perspectivedrawer.PerspectiveDrawer>
 ```
+
+Google's DrawerLayout comtatibility
+=================
+As for v0.3 a compatibility class was added: ua.pl.mik.perspectivedrawer.DrawerLayout. It provides same methods as Google's one. Also ActionBarDrawerToggle was implemented so you can use it with default actionbar.
+Migrating between this two drawers is easy and takes up to 20 min!
