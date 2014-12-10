@@ -7,7 +7,6 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "ua.pl.mik.perspectivedrawer"
         minSdkVersion 10
         targetSdkVersion 19
         versionCode 1
@@ -15,7 +14,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard true
+            minifyEnabled true
             proguardFiles 'proguard-android.txt', 'proguard-rules.pro'
         }
     }
