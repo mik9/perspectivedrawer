@@ -15,9 +15,12 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable,InnerClasses
 
 -keep class ua.pl.mik.perspectivedrawer.PerspectiveDrawer {
+   public *;
+}
+-keep interface ua.pl.mik.perspectivedrawer.PerspectiveDrawer$DrawerListener {
    public *;
 }
 -keep class ua.pl.mik.perspectivedrawer.PageHolder {
@@ -27,5 +30,11 @@
    public *;
 }
 -keep class ua.pl.mik.perspectivedrawer.DrawerLayout {
+   public *;
+}
+-keep interface ua.pl.mik.perspectivedrawer.DrawerLayout$DrawerListener {
+   public *;
+}
+-keep class ua.pl.mik.perspectivedrawer.DrawerLayout$SimpleDrawerListener {
    public *;
 }

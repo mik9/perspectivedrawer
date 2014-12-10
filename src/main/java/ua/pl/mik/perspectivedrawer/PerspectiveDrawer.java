@@ -657,7 +657,7 @@ public class PerspectiveDrawer extends FrameLayout {
     /**
      * Listener for monitoring events about drawers.
      */
-    public interface DrawerListener {
+    public static interface DrawerListener {
         /**
          * Called when a drawer's position changes.
          * @param drawerView The child view that was moved
