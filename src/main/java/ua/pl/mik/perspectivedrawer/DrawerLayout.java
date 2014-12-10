@@ -14,7 +14,7 @@ public class DrawerLayout extends PerspectiveDrawer {
      * Stub/no-op implementations of all methods of {@link DrawerListener}.
      * Override this if you only care about a few of the available callback methods.
      */
-    public abstract class SimpleDrawerListener implements DrawerListener {
+    public abstract static class SimpleDrawerListener implements DrawerListener {
         @Override
         public void onDrawerStateChanged(int newState) {
         }
@@ -143,7 +143,7 @@ public class DrawerLayout extends PerspectiveDrawer {
         super.setDrawerListener(listener);
     }
 
-    public interface DrawerListener extends PerspectiveDrawer.DrawerListener{
+    public static interface DrawerListener extends PerspectiveDrawer.DrawerListener{
         public void onDrawerStateChanged(int newState);
     }
 }
