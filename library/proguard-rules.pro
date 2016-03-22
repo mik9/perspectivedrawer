@@ -1,3 +1,29 @@
+-keepattributes SourceFile,LineNumberTable,InnerClasses
+
+-keep class ua.pl.mik.perspectivedrawer.PerspectiveDrawer {
+   public *;
+}
+-keep interface ua.pl.mik.perspectivedrawer.PerspectiveDrawer$DrawerListener {
+   public *;
+}
+-keep class ua.pl.mik.perspectivedrawer.PageHolder {
+   public *;
+}
+-keep class ua.pl.mik.perspectivedrawer.ActionBarDrawerToggle {
+   public *;
+}
+-keep class ua.pl.mik.perspectivedrawer.DrawerLayout {
+   public *;
+}
+-keep interface ua.pl.mik.perspectivedrawer.DrawerLayout$DrawerListener {
+   public *;
+}
+-keep class ua.pl.mik.perspectivedrawer.DrawerLayout$SimpleDrawerListener {
+   public *;
+}
+
+
+
 # This is a configuration file for ProGuard.
 # http://proguard.sourceforge.net/index.html#manual/usage.html
 

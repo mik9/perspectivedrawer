@@ -1,8 +1,6 @@
 Perspective Drawer
 =================
-Example application: https://github.com/mik9/perspectivedrawerexample
-
-Video: https://www.youtube.com/watch?v=-LcN3qqp3oA
+Checkout the video on [youtube](https://www.youtube.com/watch?v=-LcN3qqp3oA)
 
 <a href="http://i.imgur.com/GjBzqED.png"><img src="http://i.imgur.com/GjBzqEDl.png"></a>
 <a href="http://i.imgur.com/b4yeCZY.png"><img src="http://i.imgur.com/b4yeCZYl.png"></a>
@@ -44,7 +42,23 @@ Layout:
 </ua.pl.mik.perspectivedrawer.PerspectiveDrawer>
 ```
 
+Control:
+```java
+// Get reference to Perspective Drawer from the layout
+PerspectiveDrawer perspectiveDrawer = (PerspectiveDrawer) findViewById(R.id.drawer);
+
+// To open on an event , call
+perspectiveDrawer.open();
+
+// To close on an event , call
+perspectiveDrawer.close();
+```
+
 Google's DrawerLayout compatibility
 =================
-As for v0.3 a compatibility class was added: ua.pl.mik.perspectivedrawer.DrawerLayout. It provides same methods as Google's one. Also ActionBarDrawerToggle was implemented so you can use it with default actionbar.
+As for v0.3 compatibility was taken into consideration 
++ `ua.pl.mik.perspectivedrawer.DrawerLayout` class was added which provides same methods as 
+Google's one. 
++ `ActionBarDrawerToggle` was implemented so you can use it with default actionbar.
+
 Migrating between this two drawers is easy and takes up to 20 min!

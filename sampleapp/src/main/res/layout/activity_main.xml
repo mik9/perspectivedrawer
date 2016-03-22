@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ua.pl.mik.perspectivedrawer.PerspectiveDrawer
+    android:id="@+id/drawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Menu -->
+    <ua.pl.mik.perspectivedrawer.PageHolder
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Your views here -->
+        <ListView
+            android:id="@+id/listview_navmenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"/>
+    </ua.pl.mik.perspectivedrawer.PageHolder>
+
+    <!-- Main page -->
+    <ua.pl.mik.perspectivedrawer.PageHolder
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/perspective_drawer_shadow">
+
+        <!-- Your views here -->
+        <TextView
+            android:id="@+id/txtview_page_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Swipe from left to open the perspective drawer menu"/>
+    </ua.pl.mik.perspectivedrawer.PageHolder>
+
+</ua.pl.mik.perspectivedrawer.PerspectiveDrawer>
