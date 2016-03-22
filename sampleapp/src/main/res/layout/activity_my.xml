@@ -1,0 +1,39 @@
+<ua.pl.mik.perspectivedrawer.DrawerLayout
+    android:id="@+id/drawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Menu -->
+    <ua.pl.mik.perspectivedrawer.PageHolder
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/places"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingRight="80dp"
+            android:scrollbars="none"/>
+    </ua.pl.mik.perspectivedrawer.PageHolder>
+
+    <!-- Main page -->
+    <ua.pl.mik.perspectivedrawer.PageHolder
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/perspective_drawer_shadow">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"/>
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#E9E5DC"/>
+    </ua.pl.mik.perspectivedrawer.PageHolder>
+
+</ua.pl.mik.perspectivedrawer.DrawerLayout>

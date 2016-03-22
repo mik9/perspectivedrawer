@@ -23,5 +23,10 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
+
+    compile 'org.osmdroid:osmdroid-android:4.2'
+    compile 'org.slf4j:slf4j-android:1.6.1-RC1'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+
     compile project(':library')
 }

@@ -17,11 +17,11 @@
 
 package ua.pl.mik.perspectivedrawer;
 
-import android.R;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,29 +31,32 @@ import java.lang.reflect.Method;
 
 /**
  * This class encapsulates some awful hacks.
- *
+ * <p/>
  * Before JB-MR2 (API 18) it was not possible to change the home-as-up indicator glyph
  * in an action bar without some really gross hacks. Since the MR2 SDK is not published as of
  * this writing, the new API is accessed via reflection here if available.
  */
 class ActionBarDrawerToggleHoneycomb {
-    private static final String TAG = "ActionBarDrawerToggleHoneycomb";
+    private static final String TAG = "ABHoneycomb";
 
-    private static final int[] THEME_ATTRS = new int[] {
+    private static final int[] THEME_ATTRS = new int[]{
             R.attr.homeAsUpIndicator
     };
 
     public static Object setActionBarUpIndicator(Object info, Activity activity,
-            Drawable drawable, int contentDescRes) {
+                                                 Drawable drawable, int contentDescRes) {
         if (info == null) {
             info = new SetIndicatorInfo(activity);
         }
         final SetIndicatorInfo sii = (SetIndicatorInfo) info;
         if (sii.setHomeAsUpIndicator != null) {
             try {
-                final ActionBar actionBar = activity.getActionBar();
-                sii.setHomeAsUpIndicator.invoke(actionBar, drawable);
-                sii.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
+                final ActionBar actionBar;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                    actionBar = ((AppCompatActivity) activity).getSupportActionBar();
+                    sii.setHomeAsUpIndicator.invoke(actionBar, drawable);
+                    sii.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
+                }
             } catch (Exception e) {
                 Log.w(TAG, "Couldn't set home-as-up indicator via JB-MR2 API", e);
             }
@@ -66,14 +69,14 @@ class ActionBarDrawerToggleHoneycomb {
     }
 
     public static Object setActionBarDescription(Object info, Activity activity,
-            int contentDescRes) {
+                                                 int contentDescRes) {
         if (info == null) {
             info = new SetIndicatorInfo(activity);
         }
         final SetIndicatorInfo sii = (SetIndicatorInfo) info;
         if (sii.setHomeAsUpIndicator != null) {
             try {
-                final ActionBar actionBar = activity.getActionBar();
+                final ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
                 sii.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
             } catch (Exception e) {
                 Log.w(TAG, "Couldn't set content description via JB-MR2 API", e);
