@@ -12,7 +12,9 @@ How to use
 Gradle:
 ```groovy
 dependencies {
-    compile 'ua.pl.mik:perspectivedrawer:0.3.1@aar'
+    compile('ua.pl.mik:perspectivedrawer:0.3.1@aar') {
+        transitive = true
+    }
 }
 ```
 
