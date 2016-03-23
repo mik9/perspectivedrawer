@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PerspectiveDrawerExample</string>
+    <string name="action_close_drawer">Close on click</string>
+    <string name="action_dim_enabled">Dimming</string>
+
+    <string name="kyiv">Kyiv</string>
+    <string name="london">London</string>
+    <string name="ny">New York</string>
+    <string name="seoul">Seoul</string>
+    <string name="nj">New Jersey</string>
+    <string name="sf">San Francisco</string>
+    <string name="paris">Paris</string>
+    <string name="amsterdam">Amsterdam</string>
+    <string name="rome">Rome</string>
+    <string name="praha">Prague</string>
+    <string name="madrid">Madrid</string>
+    <string name="munchen">Munchen</string>
+    <string name="venezia">Venezia</string>
+
+</resources>

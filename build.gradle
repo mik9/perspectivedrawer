@@ -1,88 +1,15 @@
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
-apply plugin: 'signing'
-
-android {
-    compileSdkVersion 19
-    buildToolsVersion "20.0.0"
-
-    defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 19
-        versionCode 1
-        versionName "0.3.1"
-    }
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles 'proguard-android.txt', 'proguard-rules.pro'
-        }
-    }
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from 'src/main/java'
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-signing {
-    sign configurations.archives
-}
-
-uploadArchives {
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
     repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'Perspective Drawer'
-                packaging 'aar'
-                // optionally artifactId can be defined here
-                description 'Opensource library that provides new type of navigation drawer for Android applications.'
-                url 'https://github.com/mik9/perspectivedrawer'
-
-                groupId = "ua.pl.mik"
-                artifactId = "perspectivedrawer"
-                version = "0.3.1"
-
-                scm {
-                    connection 'scm:git:https://github.com/mik9/perspectivedrawer.git'
-                    developerConnection 'scm:git:git@github.com:mik9/perspectivedrawer.git'
-                    url 'https://github.com/mik9/perspectivedrawer'
-                }
-
-                licenses {
-                    license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'mik_os'
-                        name 'Kyrylo Mikos'
-                        email 'kiril.mik.os@gmail.com'
-                    }
-                }
-            }
-        }
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
     }
 }
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.nineoldandroids:library:2.4.0'
+allprojects {
+    repositories {
+        jcenter()
+    }
 }
