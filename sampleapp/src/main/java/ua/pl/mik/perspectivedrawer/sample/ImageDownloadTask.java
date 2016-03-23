@@ -5,16 +5,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class ImageDownloadTask extends AsyncTask<Place, Void, Bitmap> {
     private final Context context;
     private WeakReference<ImageView> imageViewWeakReference;
+    private static final OkHttpClient okHttpClient = new OkHttpClient();
     private static final String URL = "http://maps.googleapis.com/maps/api/staticmap?center=%1$f," +
             "%2$f&zoom=11&size=%3$dx%3$d&scale=%4$f";
 
@@ -30,7 +32,6 @@ public class ImageDownloadTask extends AsyncTask<Place, Void, Bitmap> {
         String url = String.format(URL, place.getLat(), place.getLng(),
                 context.getResources().getDimensionPixelSize(R.dimen.place_image_size),
                 context.getResources().getDisplayMetrics().density);
-        OkHttpClient okHttpClient = new OkHttpClient();
 
         Bitmap b = BitmapCache.get(place);
         if (b == null) {

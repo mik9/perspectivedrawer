@@ -1,10 +1,7 @@
 package ua.pl.mik.perspectivedrawer.sample;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import org.osmdroid.ResourceProxy;
+
 import org.osmdroid.tileprovider.MapTile;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
@@ -43,7 +40,7 @@ public final class TileSources {
         String sourceName = sourceId.name;
         String baseUrl = String.format(sourceId.baseUrl, mapVersion);
 
-        return new OnlineTileSourceBase(sourceName, ResourceProxy.string.unknown,
+        return new OnlineTileSourceBase(sourceName,
                 sourceId.minZoomLevel, sourceId.maxZoomLevel, (int) (256 * scale), ".png", new String[] {baseUrl}) {
             @Override
             public String getTileURLString(MapTile aTile) {
