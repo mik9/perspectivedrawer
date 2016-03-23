@@ -9,6 +9,31 @@ import android.view.View;
  * Google's DrawerLayout.
  */
 public class DrawerLayout extends PerspectiveDrawer {
+    /**
+     * The drawer is unlocked.
+     */
+    public static final int LOCK_MODE_UNLOCKED = 0;
+
+    /**
+     * The drawer is locked closed. The user may not open it, though
+     * the app may open it programmatically.
+     */
+    public static final int LOCK_MODE_LOCKED_CLOSED = 1;
+
+    /**
+     * The drawer is locked open. The user may not close it, though the app
+     * may close it programmatically.
+     */
+    public static final int LOCK_MODE_LOCKED_OPEN = 2;
+
+    /**
+     * The drawer's lock state is reset to default.
+     */
+    public static final int LOCK_MODE_UNDEFINED = 3;
+
+    public int getDrawerLockMode(int start) {
+        return LOCK_MODE_UNDEFINED;
+    }
 
     /**
      * Stub/no-op implementations of all methods of {@link DrawerListener}.

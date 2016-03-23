@@ -1,37 +1,65 @@
+/*
+ * Copyright (C) 2014 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ua.pl.mik.perspectivedrawer;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
-import android.view.Gravity;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 /**
  * This class provides a handy way to tie together the functionality of
- * {@link ua.pl.mik.perspectivedrawer.PerspectiveDrawer} and the framework <code>ActionBar</code> to implement the recommended
- * design for navigation drawers.
+ * {@link android.support.v4.widget.DrawerLayout} and the framework <code>ActionBar</code> to
+ * implement the recommended design for navigation drawers.
  *
  * <p>To use <code>ActionBarDrawerToggle</code>, create one in your Activity and call through
  * to the following methods corresponding to your Activity callbacks:</p>
  *
  * <ul>
- * <li>{@link Activity#onConfigurationChanged(android.content.res.Configuration) onConfigurationChanged}</li>
- * <li>{@link Activity#onOptionsItemSelected(android.view.MenuItem) onOptionsItemSelected}</li>
+ * <li>{@link android.app.Activity#onConfigurationChanged(android.content.res.Configuration)
+ * onConfigurationChanged}
+ * <li>{@link android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+ * onOptionsItemSelected}</li>
  * </ul>
  *
  * <p>Call {@link #syncState()} from your <code>Activity</code>'s
- * {@link Activity#onPostCreate(android.os.Bundle) onPostCreate} to synchronize the indicator
- * with the state of the linked DrawerLayout after <code>onRestoreInstanceState</code>
+ * {@link android.app.Activity#onPostCreate(android.os.Bundle) onPostCreate} to synchronize the
+ * indicator with the state of the linked DrawerLayout after <code>onRestoreInstanceState</code>
  * has occurred.</p>
  *
  * <p><code>ActionBarDrawerToggle</code> can be used directly as a
- * {@link ua.pl.mik.perspectivedrawer.PerspectiveDrawer.DrawerListener}, or if you are already providing your own listener,
- * call through to each of the listener methods from your own.</p>
+ * {@link android.support.v4.widget.DrawerLayout.DrawerListener}, or if you are already providing
+ * your own listener, call through to each of the listener methods from your own.</p>
+ *
+ * <p>
+ * You can customize the the animated toggle by defining the
+ * {@link android.support.v7.appcompat.R.styleable#DrawerArrowToggle drawerArrowStyle} in your
+ * ActionBar theme.
  */
 public class ActionBarDrawerToggle implements DrawerLayout.DrawerListener {
 
@@ -43,17 +71,13 @@ public class ActionBarDrawerToggle implements DrawerLayout.DrawerListener {
 
         /**
          * @return Delegate to use for ActionBarDrawableToggles, or null if the Activity
-         *         does not wish to override the default behavior.
+         * does not wish to override the default behavior.
          */
+        @Nullable
         Delegate getDrawerToggleDelegate();
     }
 
     public interface Delegate {
-        /**
-         * @return Up indicator drawable as defined in the Activity's theme, or null if one is not
-         *         defined.
-         */
-        Drawable getThemeUpIndicator();
 
         /**
          * Set the Action Bar's up indicator drawable and content description.
@@ -61,133 +85,145 @@ public class ActionBarDrawerToggle implements DrawerLayout.DrawerListener {
          * @param upDrawable     - Drawable to set as up indicator
          * @param contentDescRes - Content description to set
          */
-        void setActionBarUpIndicator(Drawable upDrawable, int contentDescRes);
+        void setActionBarUpIndicator(Drawable upDrawable, @StringRes int contentDescRes);
 
         /**
          * Set the Action Bar's up indicator content description.
          *
          * @param contentDescRes - Content description to set
          */
-        void setActionBarDescription(int contentDescRes);
+        void setActionBarDescription(@StringRes int contentDescRes);
+
+        /**
+         * Returns the drawable to be set as up button when DrawerToggle is disabled
+         */
+        Drawable getThemeUpIndicator();
+
+        /**
+         * Returns the context of ActionBar
+         */
+        Context getActionBarThemedContext();
+
+        /**
+         * Returns whether navigation icon is visible or not.
+         * Used to print warning messages in case developer forgets to set displayHomeAsUp to true
+         */
+        boolean isNavigationVisible();
     }
 
-    private interface ActionBarDrawerToggleImpl {
-        Drawable getThemeUpIndicator(Activity activity);
-        Object setActionBarUpIndicator(Object info, Activity activity,
-                                       Drawable themeImage, int contentDescRes);
-        Object setActionBarDescription(Object info, Activity activity, int contentDescRes);
-    }
-
-    private static class ActionBarDrawerToggleImplBase implements ActionBarDrawerToggleImpl {
-        @Override
-        public Drawable getThemeUpIndicator(Activity activity) {
-            return null;
-        }
-
-        @Override
-        public Object setActionBarUpIndicator(Object info, Activity activity,
-                                              Drawable themeImage, int contentDescRes) {
-            // No action bar to set.
-            return info;
-        }
-
-        @Override
-        public Object setActionBarDescription(Object info, Activity activity, int contentDescRes) {
-            // No action bar to set
-            return info;
-        }
-    }
-
-    private static class ActionBarDrawerToggleImplHC implements ActionBarDrawerToggleImpl {
-        @Override
-        public Drawable getThemeUpIndicator(Activity activity) {
-            return ActionBarDrawerToggleHoneycomb.getThemeUpIndicator(activity);
-        }
-
-        @Override
-        public Object setActionBarUpIndicator(Object info, Activity activity,
-                                              Drawable themeImage, int contentDescRes) {
-            return ActionBarDrawerToggleHoneycomb.setActionBarUpIndicator(info, activity,
-                    themeImage, contentDescRes);
-        }
-
-        @Override
-        public Object setActionBarDescription(Object info, Activity activity, int contentDescRes) {
-            return ActionBarDrawerToggleHoneycomb.setActionBarDescription(info, activity,
-                    contentDescRes);
-        }
-    }
-
-    private static final ActionBarDrawerToggleImpl IMPL;
-
-    static {
-        final int version = Build.VERSION.SDK_INT;
-        if (version >= 11) {
-            IMPL = new ActionBarDrawerToggleImplHC();
-        } else {
-            IMPL = new ActionBarDrawerToggleImplBase();
-        }
-    }
-
-    /** Fraction of its total width by which to offset the toggle drawable. */
-    private static final float TOGGLE_DRAWABLE_OFFSET = 1 / 3f;
-
-    // android.R.id.home as defined by public API in v11
-    private static final int ID_HOME = 0x0102002c;
-
-    private final Activity mActivity;
     private final Delegate mActivityImpl;
     private final DrawerLayout mDrawerLayout;
-    private boolean mDrawerIndicatorEnabled = true;
 
-    private Drawable mThemeImage;
-    private Drawable mDrawerImage;
-    private SlideDrawable mSlider;
-    private final int mDrawerImageResource;
+    private DrawerToggle mSlider;
+    private Drawable mHomeAsUpIndicator;
+    private boolean mDrawerIndicatorEnabled = true;
+    private boolean mHasCustomUpIndicator;
     private final int mOpenDrawerContentDescRes;
     private final int mCloseDrawerContentDescRes;
-
-    private Object mSetIndicatorInfo;
+    // used in toolbar mode when DrawerToggle is disabled
+    private View.OnClickListener mToolbarNavigationClickListener;
+    // If developer does not set displayHomeAsUp, DrawerToggle won't show up.
+    // DrawerToggle logs a warning if this case is detected
+    private boolean mWarnedForDisplayHomeAsUp = false;
 
     /**
      * Construct a new ActionBarDrawerToggle.
      *
-     * <p>The given {@link Activity} will be linked to the specified {@link DrawerLayout}.
-     * The provided drawer indicator drawable will animate slightly off-screen as the drawer
-     * is opened, indicating that in the open state the drawer will move off-screen when pressed
-     * and in the closed state the drawer will move on-screen when pressed.</p>
+     * <p>The given {@link Activity} will be linked to the specified {@link DrawerLayout} and
+     * its Actionbar's Up button will be set to a custom drawable.
+     * <p>This drawable shows a Hamburger icon when drawer is closed and an arrow when drawer
+     * is open. It animates between these two states as the drawer opens.</p>
      *
      * <p>String resources must be provided to describe the open/close drawer actions for
      * accessibility services.</p>
      *
-     * @param activity The Activity hosting the drawer
-     * @param drawerLayout The DrawerLayout to link to the given Activity's ActionBar
-     * @param drawerImageRes A Drawable resource to use as the drawer indicator
-     * @param openDrawerContentDescRes A String resource to describe the "open drawer" action
-     *                                 for accessibility
+     * @param activity                  The Activity hosting the drawer. Should have an ActionBar.
+     * @param drawerLayout              The DrawerLayout to link to the given Activity's ActionBar
+     * @param openDrawerContentDescRes  A String resource to describe the "open drawer" action
+     *                                  for accessibility
      * @param closeDrawerContentDescRes A String resource to describe the "close drawer" action
      *                                  for accessibility
      */
     public ActionBarDrawerToggle(Activity activity, DrawerLayout drawerLayout,
-                                 int drawerImageRes, int openDrawerContentDescRes, int closeDrawerContentDescRes) {
-        mActivity = activity;
+                                 @StringRes int openDrawerContentDescRes,
+                                 @StringRes int closeDrawerContentDescRes) {
+        this(activity, null, drawerLayout, null, openDrawerContentDescRes,
+                closeDrawerContentDescRes);
+    }
 
-        // Allow the Activity to provide an impl
-        if (activity instanceof DelegateProvider) {
+    /**
+     * Construct a new ActionBarDrawerToggle with a Toolbar.
+     * <p>
+     * The given {@link Activity} will be linked to the specified {@link DrawerLayout} and
+     * the Toolbar's navigation icon will be set to a custom drawable. Using this constructor
+     * will set Toolbar's navigation click listener to toggle the drawer when it is clicked.
+     * <p>
+     * This drawable shows a Hamburger icon when drawer is closed and an arrow when drawer
+     * is open. It animates between these two states as the drawer opens.
+     * <p>
+     * String resources must be provided to describe the open/close drawer actions for
+     * accessibility services.
+     * <p>
+     * Please use {@link #ActionBarDrawerToggle(Activity, DrawerLayout, int, int)} if you are
+     * setting the Toolbar as the ActionBar of your activity.
+     *
+     * @param activity                  The Activity hosting the drawer.
+     * @param toolbar                   The toolbar to use if you have an independent Toolbar.
+     * @param drawerLayout              The DrawerLayout to link to the given Activity's ActionBar
+     * @param openDrawerContentDescRes  A String resource to describe the "open drawer" action
+     *                                  for accessibility
+     * @param closeDrawerContentDescRes A String resource to describe the "close drawer" action
+     *                                  for accessibility
+     */
+    public ActionBarDrawerToggle(Activity activity, DrawerLayout drawerLayout,
+                                 Toolbar toolbar, @StringRes int openDrawerContentDescRes,
+                                 @StringRes int closeDrawerContentDescRes) {
+        this(activity, toolbar, drawerLayout, null, openDrawerContentDescRes,
+                closeDrawerContentDescRes);
+    }
+
+    /**
+     * In the future, we can make this constructor public if we want to let developers customize
+     * the
+     * animation.
+     */
+    <T extends Drawable & DrawerToggle> ActionBarDrawerToggle(Activity activity, Toolbar toolbar,
+                                                              DrawerLayout drawerLayout, T slider,
+                                                              @StringRes int openDrawerContentDescRes,
+                                                              @StringRes int closeDrawerContentDescRes) {
+        if (toolbar != null) {
+            mActivityImpl = new ToolbarCompatDelegate(toolbar);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mDrawerIndicatorEnabled) {
+                        toggle();
+                    } else if (mToolbarNavigationClickListener != null) {
+                        mToolbarNavigationClickListener.onClick(v);
+                    }
+                }
+            });
+        } else if (activity instanceof DelegateProvider) { // Allow the Activity to provide an impl
             mActivityImpl = ((DelegateProvider) activity).getDrawerToggleDelegate();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            mActivityImpl = new JellybeanMr2Delegate(activity);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            mActivityImpl = new HoneycombDelegate(activity);
         } else {
-            mActivityImpl = null;
+            mActivityImpl = new DummyDelegate(activity);
         }
 
         mDrawerLayout = drawerLayout;
-        mDrawerImageResource = drawerImageRes;
         mOpenDrawerContentDescRes = openDrawerContentDescRes;
         mCloseDrawerContentDescRes = closeDrawerContentDescRes;
+        if (slider == null) {
+            mSlider = new DrawerArrowDrawableToggle(activity,
+                    mActivityImpl.getActionBarThemedContext());
+        } else {
+            mSlider = slider;
+        }
 
-        mThemeImage = getThemeUpIndicator();
-        mDrawerImage = activity.getResources().getDrawable(drawerImageRes);
-        mSlider = new SlideDrawable(mDrawerImage);
-        mSlider.setOffset(TOGGLE_DRAWABLE_OFFSET);
+        mHomeAsUpIndicator = getThemeUpIndicator();
     }
 
     /**
@@ -200,16 +236,111 @@ public class ActionBarDrawerToggle implements DrawerLayout.DrawerListener {
      * (For example, if you stop forwarding appropriate drawer events for a period of time.)</p>
      */
     public void syncState() {
-        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mSlider.setPosition(1);
         } else {
             mSlider.setPosition(0);
         }
-
         if (mDrawerIndicatorEnabled) {
-            setActionBarUpIndicator(mSlider, mDrawerLayout.isDrawerOpen(Gravity.START) ?
-                    mCloseDrawerContentDescRes : mOpenDrawerContentDescRes);
+            setActionBarUpIndicator((Drawable) mSlider,
+                    mDrawerLayout.isDrawerOpen(GravityCompat.START) ?
+                            mCloseDrawerContentDescRes : mOpenDrawerContentDescRes);
         }
+    }
+
+    /**
+     * This method should always be called by your <code>Activity</code>'s
+     * {@link Activity#onConfigurationChanged(android.content.res.Configuration)
+     * onConfigurationChanged}
+     * method.
+     *
+     * @param newConfig The new configuration
+     */
+    public void onConfigurationChanged(Configuration newConfig) {
+        // Reload drawables that can change with configuration
+        if (!mHasCustomUpIndicator) {
+            mHomeAsUpIndicator = getThemeUpIndicator();
+        }
+        syncState();
+    }
+
+    /**
+     * This method should be called by your <code>Activity</code>'s
+     * {@link Activity#onOptionsItemSelected(android.view.MenuItem) onOptionsItemSelected} method.
+     * If it returns true, your <code>onOptionsItemSelected</code> method should return true and
+     * skip further processing.
+     *
+     * @param item the MenuItem instance representing the selected menu item
+     * @return true if the event was handled and further processing should not occur
+     */
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item != null && item.getItemId() == android.R.id.home && mDrawerIndicatorEnabled) {
+            toggle();
+            return true;
+        }
+        return false;
+    }
+
+    private void toggle() {
+        int drawerLockMode = mDrawerLayout.getDrawerLockMode(GravityCompat.START);
+        if (mDrawerLayout.isDrawerVisible(GravityCompat.START)
+                && (drawerLockMode != DrawerLayout.LOCK_MODE_LOCKED_OPEN)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (drawerLockMode != DrawerLayout.LOCK_MODE_LOCKED_CLOSED) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+    }
+
+    /**
+     * Set the up indicator to display when the drawer indicator is not
+     * enabled.
+     * <p>
+     * If you pass <code>null</code> to this method, the default drawable from
+     * the theme will be used.
+     *
+     * @param indicator A drawable to use for the up indicator, or null to use
+     *                  the theme's default
+     * @see #setDrawerIndicatorEnabled(boolean)
+     */
+    public void setHomeAsUpIndicator(Drawable indicator) {
+        if (indicator == null) {
+            mHomeAsUpIndicator = getThemeUpIndicator();
+            mHasCustomUpIndicator = false;
+        } else {
+            mHomeAsUpIndicator = indicator;
+            mHasCustomUpIndicator = true;
+        }
+
+        if (!mDrawerIndicatorEnabled) {
+            setActionBarUpIndicator(mHomeAsUpIndicator, 0);
+        }
+    }
+
+    /**
+     * Set the up indicator to display when the drawer indicator is not
+     * enabled.
+     * <p>
+     * If you pass 0 to this method, the default drawable from the theme will
+     * be used.
+     *
+     * @param resId Resource ID of a drawable to use for the up indicator, or 0
+     *              to use the theme's default
+     * @see #setDrawerIndicatorEnabled(boolean)
+     */
+    public void setHomeAsUpIndicator(int resId) {
+        Drawable indicator = null;
+        if (resId != 0) {
+            indicator = mDrawerLayout.getResources().getDrawable(resId);
+        }
+        setHomeAsUpIndicator(indicator);
+    }
+
+    /**
+     * @return true if the enhanced drawer indicator is enabled, false otherwise
+     * @see #setDrawerIndicatorEnabled(boolean)
+     */
+    public boolean isDrawerIndicatorEnabled() {
+        return mDrawerIndicatorEnabled;
     }
 
     /**
@@ -225,75 +356,28 @@ public class ActionBarDrawerToggle implements DrawerLayout.DrawerListener {
     public void setDrawerIndicatorEnabled(boolean enable) {
         if (enable != mDrawerIndicatorEnabled) {
             if (enable) {
-                setActionBarUpIndicator(mSlider, mDrawerLayout.isDrawerOpen(Gravity.START) ?
-                        mCloseDrawerContentDescRes : mOpenDrawerContentDescRes);
+                setActionBarUpIndicator((Drawable) mSlider,
+                        mDrawerLayout.isDrawerOpen(GravityCompat.START) ?
+                                mCloseDrawerContentDescRes : mOpenDrawerContentDescRes);
             } else {
-                setActionBarUpIndicator(mThemeImage, 0);
+                setActionBarUpIndicator(mHomeAsUpIndicator, 0);
             }
             mDrawerIndicatorEnabled = enable;
         }
     }
 
-    /**
-     * @return true if the enhanced drawer indicator is enabled, false otherwise
-     * @see #setDrawerIndicatorEnabled(boolean)
-     */
-    public boolean isDrawerIndicatorEnabled() {
-        return mDrawerIndicatorEnabled;
-    }
-
-    /**
-     * This method should always be called by your <code>Activity</code>'s
-     * {@link Activity#onConfigurationChanged(android.content.res.Configuration) onConfigurationChanged}
-     * method.
-     *
-     * @param newConfig The new configuration
-     */
-    public void onConfigurationChanged(Configuration newConfig) {
-        // Reload drawables that can change with configuration
-        mThemeImage = getThemeUpIndicator();
-        mDrawerImage = mActivity.getResources().getDrawable(mDrawerImageResource);
-        syncState();
-    }
-
-    /**
-     * This method should be called by your <code>Activity</code>'s
-     * {@link Activity#onOptionsItemSelected(android.view.MenuItem) onOptionsItemSelected} method.
-     * If it returns true, your <code>onOptionsItemSelected</code> method should return true and
-     * skip further processing.
-     *
-     * @param item the MenuItem instance representing the selected menu item
-     * @return true if the event was handled and further processing should not occur
-     */
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item != null && item.getItemId() == ID_HOME && mDrawerIndicatorEnabled) {
-            if (mDrawerLayout.isDrawerVisible(Gravity.START)) {
-                mDrawerLayout.closeDrawer(Gravity.START);
-            } else {
-                mDrawerLayout.openDrawer(Gravity.START);
-            }
-            return true;
-        }
-        return false;
-    }
 
     /**
      * {@link DrawerLayout.DrawerListener} callback method. If you do not use your
      * ActionBarDrawerToggle instance directly as your DrawerLayout's listener, you should call
      * through to this method from your own listener object.
      *
-     * @param drawerView The child view that was moved
+     * @param drawerView  The child view that was moved
      * @param slideOffset The new offset of this drawer within its range, from 0-1
      */
     @Override
     public void onDrawerSlide(View drawerView, float slideOffset) {
-        float glyphOffset = mSlider.getPosition();
-        if (slideOffset > 0.5f) {
-            glyphOffset = Math.max(glyphOffset, Math.max(0.f, slideOffset - 0.5f) * 2);
-        } else {
-            glyphOffset = Math.min(glyphOffset, slideOffset * 2);
-        }
-        mSlider.setPosition(glyphOffset);
+        mSlider.setPosition(Math.min(1f, Math.max(0, slideOffset)));
     }
 
     /**
@@ -337,89 +421,272 @@ public class ActionBarDrawerToggle implements DrawerLayout.DrawerListener {
     public void onDrawerStateChanged(int newState) {
     }
 
-    Drawable getThemeUpIndicator() {
-        if (mActivityImpl != null) {
-            return mActivityImpl.getThemeUpIndicator();
-        }
-        return IMPL.getThemeUpIndicator(mActivity);
+    /**
+     * Returns the fallback listener for Navigation icon click events.
+     *
+     * @return The click listener which receives Navigation click events from Toolbar when
+     * drawer indicator is disabled.
+     * @see #setToolbarNavigationClickListener(android.view.View.OnClickListener)
+     * @see #setDrawerIndicatorEnabled(boolean)
+     * @see #isDrawerIndicatorEnabled()
+     */
+    public View.OnClickListener getToolbarNavigationClickListener() {
+        return mToolbarNavigationClickListener;
+    }
+
+    /**
+     * When DrawerToggle is constructed with a Toolbar, it sets the click listener on
+     * the Navigation icon. If you want to listen for clicks on the Navigation icon when
+     * DrawerToggle is disabled ({@link #setDrawerIndicatorEnabled(boolean)}, you should call this
+     * method with your listener and DrawerToggle will forward click events to that listener
+     * when drawer indicator is disabled.
+     *
+     * @see #setDrawerIndicatorEnabled(boolean)
+     */
+    public void setToolbarNavigationClickListener(
+            View.OnClickListener onToolbarNavigationClickListener) {
+        mToolbarNavigationClickListener = onToolbarNavigationClickListener;
     }
 
     void setActionBarUpIndicator(Drawable upDrawable, int contentDescRes) {
-        if (mActivityImpl != null) {
-            mActivityImpl.setActionBarUpIndicator(upDrawable, contentDescRes);
-            return;
+        if (!mWarnedForDisplayHomeAsUp && !mActivityImpl.isNavigationVisible()) {
+            Log.w("ActionBarDrawerToggle", "DrawerToggle may not show up because NavigationIcon"
+                    + " is not visible. You may need to call "
+                    + "actionbar.setDisplayHomeAsUpEnabled(true);");
+            mWarnedForDisplayHomeAsUp = true;
         }
-        mSetIndicatorInfo = IMPL
-                .setActionBarUpIndicator(mSetIndicatorInfo, mActivity, upDrawable, contentDescRes);
+        mActivityImpl.setActionBarUpIndicator(upDrawable, contentDescRes);
     }
 
     void setActionBarDescription(int contentDescRes) {
-        if (mActivityImpl != null) {
-            mActivityImpl.setActionBarDescription(contentDescRes);
-            return;
-        }
-        mSetIndicatorInfo = IMPL
-                .setActionBarDescription(mSetIndicatorInfo, mActivity, contentDescRes);
+        mActivityImpl.setActionBarDescription(contentDescRes);
     }
 
-    private class SlideDrawable extends InsetDrawable implements Drawable.Callback {
-        private final boolean mHasMirroring = Build.VERSION.SDK_INT > 18;
-        private final Rect mTmpRect = new Rect();
+    Drawable getThemeUpIndicator() {
+        return mActivityImpl.getThemeUpIndicator();
+    }
 
-        private float mPosition;
-        private float mOffset;
+    static class DrawerArrowDrawableToggle extends DrawerArrowDrawable implements DrawerToggle {
+        private final Activity mActivity;
 
-        private SlideDrawable(Drawable wrapped) {
-            super(wrapped, 0);
+        public DrawerArrowDrawableToggle(Activity activity, Context themedContext) {
+            super(themedContext);
+            mActivity = activity;
         }
 
-        /**
-         * Sets the current position along the offset.
-         *
-         * @param position a value between 0 and 1
-         */
         public void setPosition(float position) {
-            mPosition = position;
-            invalidateSelf();
+            if (position == 1f) {
+                setVerticalMirror(true);
+            } else if (position == 0f) {
+                setVerticalMirror(false);
+            }
+            setProgress(position);
         }
 
         public float getPosition() {
-            return mPosition;
+            return getProgress();
         }
+    }
 
-        /**
-         * Specifies the maximum offset when the position is at 1.
-         *
-         * @param offset maximum offset as a fraction of the drawable width,
-         *            positive to shift left or negative to shift right.
-         * @see #setPosition(float)
-         */
-        public void setOffset(float offset) {
-            mOffset = offset;
-            invalidateSelf();
+    /**
+     * Interface for toggle drawables. Can be public in the future
+     */
+    static interface DrawerToggle {
+
+        public void setPosition(float position);
+
+        public float getPosition();
+    }
+
+    /**
+     * Delegate if SDK version is between honeycomb and JBMR2
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private static class HoneycombDelegate implements Delegate {
+
+        final Activity mActivity;
+        ActionBarDrawerToggleHoneycomb.SetIndicatorInfo mSetIndicatorInfo;
+
+        private HoneycombDelegate(Activity activity) {
+            mActivity = activity;
         }
 
         @Override
-        public void draw(Canvas canvas) {
-            copyBounds(mTmpRect);
-            canvas.save();
+        public Drawable getThemeUpIndicator() {
+            return ActionBarDrawerToggleHoneycomb.getThemeUpIndicator(mActivity);
+        }
 
-            // Layout direction must be obtained from the activity.
-            final boolean isLayoutRTL = false;
-//            final boolean isLayoutRTL = ViewCompat.getLayoutDirection(
-//                    mActivity.getWindow().getDecorView()) == ViewCompat.LAYOUT_DIRECTION_RTL;
-            final int flipRtl = isLayoutRTL ? -1 : 1;
-            final int width = mTmpRect.width();
-            canvas.translate(-mOffset * width * mPosition * flipRtl, 0);
-
-            // Force auto-mirroring if it's not supported by the platform.
-            if (isLayoutRTL && !mHasMirroring) {
-                canvas.translate(width, 0);
-                canvas.scale(-1, 1);
+        @Override
+        public Context getActionBarThemedContext() {
+            final ActionBar actionBar = mActivity.getActionBar();
+            final Context context;
+            if (actionBar != null) {
+                context = actionBar.getThemedContext();
+            } else {
+                context = mActivity;
             }
+            return context;
+        }
 
-            super.draw(canvas);
-            canvas.restore();
+        @Override
+        public boolean isNavigationVisible() {
+            final ActionBar actionBar = mActivity.getActionBar();
+            return actionBar != null
+                    && (actionBar.getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP) != 0;
+        }
+
+        @Override
+        public void setActionBarUpIndicator(Drawable themeImage, int contentDescRes) {
+            mActivity.getActionBar().setDisplayShowHomeEnabled(true);
+            mSetIndicatorInfo = ActionBarDrawerToggleHoneycomb.setActionBarUpIndicator(
+                    mSetIndicatorInfo, mActivity, themeImage, contentDescRes);
+            mActivity.getActionBar().setDisplayShowHomeEnabled(false);
+        }
+
+        @Override
+        public void setActionBarDescription(int contentDescRes) {
+            mSetIndicatorInfo = ActionBarDrawerToggleHoneycomb.setActionBarDescription(
+                    mSetIndicatorInfo, mActivity, contentDescRes);
+        }
+    }
+
+    /**
+     * Delegate if SDK version is JB MR2 or newer
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private static class JellybeanMr2Delegate implements Delegate {
+
+        final Activity mActivity;
+
+        private JellybeanMr2Delegate(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        public Drawable getThemeUpIndicator() {
+            final TypedArray a = getActionBarThemedContext().obtainStyledAttributes(null,
+                    new int[]{android.R.attr.homeAsUpIndicator}, android.R.attr.actionBarStyle, 0);
+            final Drawable result = a.getDrawable(0);
+            a.recycle();
+            return result;
+        }
+
+        @Override
+        public Context getActionBarThemedContext() {
+            final ActionBar actionBar = mActivity.getActionBar();
+            final Context context;
+            if (actionBar != null) {
+                context = actionBar.getThemedContext();
+            } else {
+                context = mActivity;
+            }
+            return context;
+        }
+
+        @Override
+        public boolean isNavigationVisible() {
+            final ActionBar actionBar = mActivity.getActionBar();
+            return actionBar != null &&
+                    (actionBar.getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP) != 0;
+        }
+
+        @Override
+        public void setActionBarUpIndicator(Drawable drawable, int contentDescRes) {
+            final ActionBar actionBar = mActivity.getActionBar();
+            if (actionBar != null) {
+                actionBar.setHomeAsUpIndicator(drawable);
+                actionBar.setHomeActionContentDescription(contentDescRes);
+            }
+        }
+
+        @Override
+        public void setActionBarDescription(int contentDescRes) {
+            final ActionBar actionBar = mActivity.getActionBar();
+            if (actionBar != null) {
+                actionBar.setHomeActionContentDescription(contentDescRes);
+            }
+        }
+    }
+
+    /**
+     * Used when DrawerToggle is initialized with a Toolbar
+     */
+    static class ToolbarCompatDelegate implements Delegate {
+
+        final Toolbar mToolbar;
+        final Drawable mDefaultUpIndicator;
+        final CharSequence mDefaultContentDescription;
+
+        ToolbarCompatDelegate(Toolbar toolbar) {
+            mToolbar = toolbar;
+            mDefaultUpIndicator = toolbar.getNavigationIcon();
+            mDefaultContentDescription = toolbar.getNavigationContentDescription();
+        }
+
+        @Override
+        public void setActionBarUpIndicator(Drawable upDrawable, @StringRes int contentDescRes) {
+            mToolbar.setNavigationIcon(upDrawable);
+            setActionBarDescription(contentDescRes);
+        }
+
+        @Override
+        public void setActionBarDescription(@StringRes int contentDescRes) {
+            if (contentDescRes == 0) {
+                mToolbar.setNavigationContentDescription(mDefaultContentDescription);
+            } else {
+                mToolbar.setNavigationContentDescription(contentDescRes);
+            }
+        }
+
+        @Override
+        public Drawable getThemeUpIndicator() {
+            return mDefaultUpIndicator;
+        }
+
+        @Override
+        public Context getActionBarThemedContext() {
+            return mToolbar.getContext();
+        }
+
+        @Override
+        public boolean isNavigationVisible() {
+            return true;
+        }
+    }
+
+    /**
+     * Fallback delegate
+     */
+    static class DummyDelegate implements Delegate {
+        final Activity mActivity;
+
+        DummyDelegate(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        public void setActionBarUpIndicator(Drawable upDrawable, @StringRes int contentDescRes) {
+
+        }
+
+        @Override
+        public void setActionBarDescription(@StringRes int contentDescRes) {
+
+        }
+
+        @Override
+        public Drawable getThemeUpIndicator() {
+            return null;
+        }
+
+        @Override
+        public Context getActionBarThemedContext() {
+            return mActivity;
+        }
+
+        @Override
+        public boolean isNavigationVisible() {
+            return true;
         }
     }
 }

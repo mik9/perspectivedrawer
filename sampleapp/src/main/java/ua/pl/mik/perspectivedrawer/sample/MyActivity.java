@@ -70,7 +70,7 @@ public class MyActivity extends AppCompatActivity {
             mDrawer.open();
         }
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.drawable.ic_navigation_drawer,
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, (Toolbar) findViewById(R.id.toolbar),
                 R.string.action_close_drawer,
                 R.string.action_close_drawer);
         mDrawer.setDrawerListener(mDrawerToggle);

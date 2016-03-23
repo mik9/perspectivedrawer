@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project
+ * Copyright (C) 2014 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,13 @@
 
 package ua.pl.mik.perspectivedrawer;
 
+import android.R;
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,53 +33,56 @@ import java.lang.reflect.Method;
 
 /**
  * This class encapsulates some awful hacks.
- * <p/>
+ *
  * Before JB-MR2 (API 18) it was not possible to change the home-as-up indicator glyph
  * in an action bar without some really gross hacks. Since the MR2 SDK is not published as of
  * this writing, the new API is accessed via reflection here if available.
+ *
+ * Moved from Support-v4
  */
 class ActionBarDrawerToggleHoneycomb {
-    private static final String TAG = "ABHoneycomb";
+    private static final String TAG = "ActionBarDrawerToggleHoneycomb";
 
-    private static final int[] THEME_ATTRS = new int[]{
+    private static final int[] THEME_ATTRS = new int[] {
             R.attr.homeAsUpIndicator
     };
 
-    public static Object setActionBarUpIndicator(Object info, Activity activity,
-                                                 Drawable drawable, int contentDescRes) {
-        if (info == null) {
+    @SuppressLint("LongLogTag")
+    public static SetIndicatorInfo setActionBarUpIndicator(SetIndicatorInfo info, Activity activity,
+                                                           Drawable drawable, int contentDescRes) {
+        if (true || info == null) {
             info = new SetIndicatorInfo(activity);
         }
-        final SetIndicatorInfo sii = (SetIndicatorInfo) info;
-        if (sii.setHomeAsUpIndicator != null) {
+        if (info.setHomeAsUpIndicator != null) {
             try {
-                final ActionBar actionBar;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                    actionBar = ((AppCompatActivity) activity).getSupportActionBar();
-                    sii.setHomeAsUpIndicator.invoke(actionBar, drawable);
-                    sii.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
-                }
+                final ActionBar actionBar = activity.getActionBar();
+                info.setHomeAsUpIndicator.invoke(actionBar, drawable);
+                info.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
             } catch (Exception e) {
                 Log.w(TAG, "Couldn't set home-as-up indicator via JB-MR2 API", e);
             }
-        } else if (sii.upIndicatorView != null) {
-            sii.upIndicatorView.setImageDrawable(drawable);
+        } else if (info.upIndicatorView != null) {
+            info.upIndicatorView.setImageDrawable(drawable);
         } else {
             Log.w(TAG, "Couldn't set home-as-up indicator");
         }
         return info;
     }
 
-    public static Object setActionBarDescription(Object info, Activity activity,
-                                                 int contentDescRes) {
+    public static SetIndicatorInfo setActionBarDescription(SetIndicatorInfo info, Activity activity,
+                                                           int contentDescRes) {
         if (info == null) {
             info = new SetIndicatorInfo(activity);
         }
-        final SetIndicatorInfo sii = (SetIndicatorInfo) info;
-        if (sii.setHomeAsUpIndicator != null) {
+        if (info.setHomeAsUpIndicator != null) {
             try {
-                final ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
-                sii.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
+                final ActionBar actionBar = activity.getActionBar();
+                info.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
+                if (Build.VERSION.SDK_INT <= 19) {
+                    // For API 19 and earlier, we need to manually force the
+                    // action bar to generate a new content description.
+                    actionBar.setSubtitle(actionBar.getSubtitle());
+                }
             } catch (Exception e) {
                 Log.w(TAG, "Couldn't set content description via JB-MR2 API", e);
             }
@@ -92,7 +97,7 @@ class ActionBarDrawerToggleHoneycomb {
         return result;
     }
 
-    private static class SetIndicatorInfo {
+    static class SetIndicatorInfo {
         public Method setHomeAsUpIndicator;
         public Method setHomeActionContentDescription;
         public ImageView upIndicatorView;
