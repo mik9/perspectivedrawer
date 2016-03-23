@@ -10,7 +10,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 23
         versionCode 1
-        versionName "0.3.1"
+        versionName "0.3.2"
     }
     buildTypes {
         release {
@@ -62,7 +62,7 @@ uploadArchives {
 
                 groupId = "ua.pl.mik"
                 artifactId = "perspectivedrawer"
-                version = "0.3.1"
+                version = "0.3.2"
 
                 scm {
                     connection 'scm:git:https://github.com/mik9/perspectivedrawer.git'
